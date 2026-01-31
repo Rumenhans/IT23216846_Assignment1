@@ -347,7 +347,8 @@ test.describe('Option 1: Singlish to Sinhala Functional Tests', () => {
     await page.waitForTimeout(2000);
     const outputArea = page.locator('generic').filter({ hasText: 'Sinhala' }).locator('..').locator('generic').nth(1);
     const text = await outputArea.textContent();
-    expect(text).toBeDefined();
+    // Should either be empty or show an error message
+    expect(text?.trim() || '').toBe('');
   });
 
   test('Neg_Fun_02: Empty input handling', async ({ page }) => {
@@ -356,6 +357,7 @@ test.describe('Option 1: Singlish to Sinhala Functional Tests', () => {
     await page.waitForTimeout(1000);
     const outputArea = page.locator('generic').filter({ hasText: 'Sinhala' }).locator('..').locator('generic').nth(1);
     const text = await outputArea.textContent();
+    // Empty input should produce empty output
     expect(text?.trim() || '').toBe('');
   });
 
@@ -365,7 +367,8 @@ test.describe('Option 1: Singlish to Sinhala Functional Tests', () => {
     await page.waitForTimeout(1000);
     const outputArea = page.locator('generic').filter({ hasText: 'Sinhala' }).locator('..').locator('generic').nth(1);
     const text = await outputArea.textContent();
-    expect(text).toBeDefined();
+    // Whitespace-only input should produce empty output
+    expect(text?.trim() || '').toBe('');
   });
 
   test('Neg_Fun_04: Numbers only input', async ({ page }) => {
@@ -374,7 +377,8 @@ test.describe('Option 1: Singlish to Sinhala Functional Tests', () => {
     await page.waitForTimeout(1500);
     const outputArea = page.locator('generic').filter({ hasText: 'Sinhala' }).locator('..').locator('generic').nth(1);
     const text = await outputArea.textContent();
-    expect(text).toContain('1234567890');
+    // Numbers-only should NOT produce Sinhala output (should be empty or just numbers)
+    expect(text?.trim() || '').not.toContain('ා');
   });
 
   test('Neg_Fun_05: Very long single word without spaces', async ({ page }) => {
@@ -383,6 +387,7 @@ test.describe('Option 1: Singlish to Sinhala Functional Tests', () => {
     await page.waitForTimeout(3000);
     const outputArea = page.locator('generic').filter({ hasText: 'Sinhala' }).locator('..').locator('generic').nth(1);
     const text = await outputArea.textContent();
-    expect(text).toBeDefined();
+    // Should either be empty or handle it gracefully (but not translate invalid long word)
+    expect(text?.trim() || '').toBe('');
   });
 });
